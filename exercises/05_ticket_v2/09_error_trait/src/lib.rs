@@ -1,5 +1,5 @@
-use std::fmt::{Debug, Display, Formatter, Result};
-use std::error::Error;
+// use std::fmt::{Debug, Display, Formatter, Result};
+// use std::error::Error;
 // TODO: Implement `Debug`, `Display` and `Error` for the `TicketNewError` enum.
 //  When implementing `Display`, you may want to use the `write!` macro from Rust's standard library.
 //  The docs for the `std::fmt` module are a good place to start and look for examples:
@@ -11,13 +11,16 @@ enum TicketNewError {
     DescriptionError(String),
 }
 
-impl Display for TicketNewError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), NewTicketError> {
-        write!(f, "{}", self)
+impl std::fmt::Display for TicketNewError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            TicketNewError::TitleError(msg) => write!(f, "{}", msg),
+            TicketNewError::DescriptionError(msg) => write!(f, "{}", msg),
+        }
     }
 }
 
-impl Error for TicketNewError {}
+impl std::error::Error for TicketNewError {}
 // TODO: `easy_ticket` should panic when the title is invalid, using the error message
 //   stored inside the relevant variant of the `TicketNewError` enum.
 //   When the description is invalid, instead, it should use a default description:
@@ -25,10 +28,12 @@ impl Error for TicketNewError {}
 fn easy_ticket(title: String, description: String, status: Status) -> Ticket {
     match Ticket::new(title.clone(), description, status.clone()) {
         Ok(ticket) => ticket,
-        Err(TicketNewError::DescriptionError(_)) => Ticket::new(title,
-                              "Description not provided".to_string(),
-                              status).unwrap(),
-        Err(TicketNewError::TitleError(msg)) => panic!(msg),
+        Err(error) => match error {
+            TicketNewError::DescriptionError(_) => {
+                Ticket::new(title, "Description not provided".to_string(), status).unwrap()},
+            TicketNewError::TitleError(_) => panic!("{error}")
+            
+        }
     }
 }
 
