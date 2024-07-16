@@ -6,6 +6,20 @@ pub struct TicketStore {
     tickets: Vec<Ticket>,
 }
 
+impl TicketStore {
+    pub fn new() -> Self {
+        Self {
+            tickets: Vec::new(),
+        }
+    }
+    pub fn add_ticket(&mut self, ticket: Ticket) {
+        self.tickets.push(ticket);
+    }
+    pub fn iter(&self) -> std::slice::Iter<Ticket>{
+        self.tickets.iter()
+    }
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct Ticket {
     title: TicketTitle,
@@ -20,17 +34,6 @@ pub enum Status {
     Done,
 }
 
-impl TicketStore {
-    pub fn new() -> Self {
-        Self {
-            tickets: Vec::new(),
-        }
-    }
-
-    pub fn add_ticket(&mut self, ticket: Ticket) {
-        self.tickets.push(ticket);
-    }
-}
 
 #[cfg(test)]
 mod tests {
