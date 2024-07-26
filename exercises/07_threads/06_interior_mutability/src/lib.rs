@@ -17,7 +17,8 @@ impl<T> DropTracker<T> {
 
 impl<T> Drop for DropTracker<T> {
     fn drop(&mut self) {
-        todo!()
+        *self.counter.borrow_mut() += 1;
+        drop(self.counter.borrow_mut());
     }
 }
 
